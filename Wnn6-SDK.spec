@@ -58,6 +58,7 @@ Statyczna biblioteka kliencka Wnn6.
 
 %build
 %{__make} World -f Makefile.ini \
+	CC="%{__cc}" \
 	CDEBUGFLAGS="%{rpmcflags}"
 
 %install
