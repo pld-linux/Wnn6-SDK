@@ -3,7 +3,7 @@ Summary(pl):	Biblioteka kliencka Wnn6
 Name:		Wnn6-SDK
 Version:	1.0
 Release:	11
-License:	(c) OMRON Corporation, OMRON Software Co., Ltd. (see README)
+License:	Copyright (C) OMRON Corporation, OMRON Software Co., Ltd. (see README)
 Group:		Libraries
 Source0:	ftp://ftp.omronsoft.co.jp/pub/Wnn6/sdk_source/%{name}.tar.gz
 Patch0:		%{name}-config.patch
