@@ -6,6 +6,7 @@ Release:	11
 License:	Copyright (C) OMRON Corporation, OMRON Software Co., Ltd. (see README)
 Group:		Libraries
 Source0:	ftp://ftp.omronsoft.co.jp/pub/Wnn6/sdk_source/%{name}.tar.gz
+# Source0-md5:	8e0148560524643680fd016e5c4e406b
 Patch0:		%{name}-config.patch
 Patch1:		%{name}-incl.patch
 Patch2:		%{name}-shared.patch
