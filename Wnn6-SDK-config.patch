@@ -1,0 +1,75 @@
+diff -ruN src.org/contrib/im/Xsi/Wnn/include/config.h src/contrib/im/Xsi/Wnn/include/config.h
+--- src.org/contrib/im/Xsi/Wnn/include/config.h	Wed Oct 28 13:36:24 1998
++++ src/contrib/im/Xsi/Wnn/include/config.h	Wed Jan 27 11:36:40 1999
+@@ -140,7 +140,7 @@
+ #define _CONFIG_H_
+ 
+ #ifndef	LIBDIR
+-#define	LIBDIR		"/usr/local/lib/wnn6"
++#define	LIBDIR		"/var/lib/wnn6"
+ #endif	/* LIBDIR */
+ 
+ #ifdef TAIWANESE
+diff -ruN src.org/contrib/im/Xsi/config/X11.tmpl src/contrib/im/Xsi/config/X11.tmpl
+--- src.org/contrib/im/Xsi/config/X11.tmpl	Wed Oct 28 13:36:37 1998
++++ src/contrib/im/Xsi/config/X11.tmpl	Wed Jan 27 11:36:14 1999
+@@ -502,32 +502,36 @@
+ #define WnnOwner	wnn
+ #endif
+ 
++#ifndef InstallHeader
++#define InstallHeader YES
++#endif
++
+ #ifndef ImTop
+ #define ImTop	$(CONTRIBSRC)/im/Xsi
+ #endif
+ 
+ #ifndef WnnWnnDir
+-#define WnnWnnDir	/usr/local/lib/wnn6
++#define WnnWnnDir	/var/lib/wnn6
+ #endif
+ 
+ 
+ #ifndef WnnBinDir
+-#define WnnBinDir	/usr/local/bin
++#define WnnBinDir	/usr/bin
+ #endif
+ 
+ #ifndef WnnIncDir
+-#define WnnIncDir	$(INCROOT)
++#define WnnIncDir	/usr/include
+ #endif
+ 
+ #ifndef WnnLibDir
+-#define WnnLibDir	$(USRLIBDIR)
++#define WnnLibDir	/usr/lib
+ #endif
+ 
+        WNNOWNER = WnnOwner
+           IMTOP = ImTop
+       WNNWNNDIR = WnnWnnDir
+       WNNBINDIR = WnnBinDir
+-      WNNINCDIR = WnnIncRoot
++      WNNINCDIR = WnnIncDir
+       WNNLIBDIR = WnnLibDir
+ 
+     WNNTERM_LIB = termLibrary
+@@ -539,7 +543,7 @@
+      JWNNWNNDIR = $(WNNWNNDIR)/ja_JP
+      JWNNBINDIR = $(WNNBINDIR)/Wnn6
+ 
+-     JWNNINCDIR = $(WNNINCDIR)/wnn
++     JWNNINCDIR = $(WNNINCDIR)/wnn6
+      JWNNDICDIR = $(JWNNWNNDIR)/dic
+   JWNNPUBDICDIR = $(JWNNDICDIR)/pubdic
+ JWNNWNNCONSDICDIR = $(JWNNDICDIR)/wnncons
+@@ -563,7 +567,7 @@
+    WNNCNVFILEDIR = $(WNNJDSRC)/cvtfileDir
+     WNNINCLUDES = -I$(WNNINCLUDESRC) -I$(WNNROMKANMSRC)
+      WNNDEFINES = -DLIBDIR=\"$(WNNWNNDIR)\"
+-        WNNJLIB = $(WNNJLIBSRC)/libwnn6_fromsrc.a
++        WNNJLIB = $(WNNJLIBSRC)/libwnn6.a
+      WNNCONVLIB = $(WNNCONVSRC)/libconvkey.a
+ 
+         CWNNTOP = $(IMTOP)/cWnn

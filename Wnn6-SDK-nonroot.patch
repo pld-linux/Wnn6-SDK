@@ -1,0 +1,11 @@
+--- Xsi/config/X11.tmpl.org	Wed Jan 27 12:36:50 1999
++++ Xsi/config/X11.tmpl	Wed Jan 27 12:38:43 1999
+@@ -423,7 +423,7 @@
+ #undef MakeDir
+ #endif
+ #define MakeDir(dir) DirFailPrefix@if [ -d dir ]; then set +x; \	@@\
+-	else (set -x; $(MKDIRHIER) dir; chown $(WNNOWNER) dir); fi
++	else (set -x; $(MKDIRHIER) dir;); fi
+ 
+ #ifdef MakeDirectory
+ #undef MakeDirectory

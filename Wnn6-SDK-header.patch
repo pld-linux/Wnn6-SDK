@@ -1,0 +1,19 @@
+*** Wnn/jlib/jl.c.org	Wed Oct 28 13:36:30 1998
+--- Wnn/jlib/jl.c	Sun Jun 27 03:21:23 1999
+***************
+*** 6335,6341 ****
+  	extern struct	passwd	*getpwnam();
+  #ifdef	SYSVR2
+  #ifndef	AIXV3
+! 	extern char * strchr();
+  #endif /* AIXV3 */
+  #endif
+  
+--- 6335,6341 ----
+  	extern struct	passwd	*getpwnam();
+  #ifdef	SYSVR2
+  #ifndef	AIXV3
+! /*	extern char * strchr(); */
+  #endif /* AIXV3 */
+  #endif
+  

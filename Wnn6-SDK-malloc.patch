@@ -1,0 +1,938 @@
+diff -uNr Xsi.orig/Wnn/etc/bdic.c Xsi/Wnn/etc/bdic.c
+--- Xsi.orig/Wnn/etc/bdic.c	Wed Oct 28 13:36:16 1998
++++ Xsi/Wnn/etc/bdic.c	Tue Nov 10 05:17:21 1998
+@@ -179,6 +179,8 @@
+ #define max(a, b) ((a < b)? b:a)
+ #endif
+ 
++extern  char    *malloc0();
++
+ /*:::DOC_START
+  *
+  *    Function Name: dic_get_compressed_filename
+@@ -1849,7 +1851,7 @@
+     hjt.hindo_area = (int)((serial + MAX_HINDO_DATA_AREA - 1) / MAX_HINDO_DATA_AREA);
+     if(hjt.hindo_area != 0) {
+ 	if((hjt.curserial = (unsigned char *)
+-	        malloc(hjt.hindo_area * sizeof(unsigned char))) == NULL)
++	        malloc0(hjt.hindo_area * sizeof(unsigned char))) == NULL)
+             return(-1);
+ 	for(i = 0; i < hjt.hindo_area; i++) (hjt.curserial)[i] = 0;
+     } else
+@@ -1977,7 +1979,7 @@
+         return(-1);
+     if(hjt1->hindo_area != 0) {
+ 	if((hjt1->curserial = (unsigned char *)
+-	        malloc(hjt1->hindo_area * sizeof(unsigned char))) == NULL)
++	        malloc0(hjt1->hindo_area * sizeof(unsigned char))) == NULL)
+             return(-1);
+ 	for(i = 0; i < hjt1->hindo_area; i++)
+ 	    (hjt1->curserial)[i] = vgetc(ifpter, args);
+diff -uNr Xsi.orig/Wnn/etc/fi_bdic.c Xsi/Wnn/etc/fi_bdic.c
+--- Xsi.orig/Wnn/etc/fi_bdic.c	Wed Oct 28 13:36:17 1998
++++ Xsi/Wnn/etc/fi_bdic.c	Tue Nov 10 05:17:02 1998
+@@ -179,6 +179,7 @@
+           putnull();
+ #endif /* Not JS */
+ 
++extern  char    *malloc0();
+ 
+ 
+ #ifndef JS
+@@ -215,7 +216,7 @@
+     /* 接続定義Ｗｎｎ辞書 f_uniq 配列の読み込み */
+     if(jt1->maxjisho) {
+ 	if((jt1->jisho_uniq = (struct wnn_file_uniq *)
+-	    malloc(jt1->maxjisho * sizeof(struct wnn_file_uniq))) == NULL)
++	    malloc0(jt1->maxjisho * sizeof(struct wnn_file_uniq))) == NULL)
+ 	     return(-1);
+ 	for(i = 0; i < jt1->maxjisho; i++) {
+ 	    if(input_file_uniq(&((jt1->jisho_uniq)[i]), ifpter, args) == -1)
+diff -uNr Xsi.orig/Wnn/etc/gethinsi.c Xsi/Wnn/etc/gethinsi.c
+--- Xsi.orig/Wnn/etc/gethinsi.c	Wed Oct 28 13:36:17 1998
++++ Xsi/Wnn/etc/gethinsi.c	Tue Nov 10 05:12:15 1998
+@@ -210,6 +210,9 @@
+ extern char *hinsi_file_name;
+ #endif /* !DSERVER && JSERVER */
+ 
++extern	char	*malloc0();
++extern	void	free0();
++
+ static void
+ error_long(args)
+ ARGS *args;
+@@ -622,7 +625,7 @@
+     struct HDT *hdata;
+     static int wnn_find_load_hinsi_by_name();
+ 
+-    if((hdata = (struct HDT *)malloc(sizeof(struct HDT))) == NULL) {
++    if((hdata = (struct HDT *)malloc0(sizeof(struct HDT))) == NULL) {
+ 	return(-1);
+     }
+     hp = heap = hdata->heap;
+@@ -701,7 +704,7 @@
+ 
+     return(0);
+  err:
+-    free(hdata);
++    free0(hdata);
+     return(HINSI_ERR);
+ }
+ 
+diff -uNr Xsi.orig/Wnn/etc/msg.c Xsi/Wnn/etc/msg.c
+--- Xsi.orig/Wnn/etc/msg.c	Wed Oct 28 13:36:18 1998
++++ Xsi/Wnn/etc/msg.c	Tue Nov 10 05:13:39 1998
+@@ -160,6 +160,9 @@
+ 
+ extern char *getenv();
+ 
++extern char *malloc0();
++extern void free0();
++
+ static char *
+ bsearch(ky, bs, nel, width, compar)
+ char *ky;
+@@ -386,7 +389,7 @@
+ 	}
+     }
+ 
+-    if (!(cd = (struct msg_cat *)malloc(sizeof(struct msg_cat))))
++    if (!(cd = (struct msg_cat *)malloc0(sizeof(struct msg_cat))))
+ 	return(NULL);
+ 
+     strcpy(cd->name, name);
+@@ -415,9 +418,9 @@
+ 
+     cd->msg_cnt = msg_cnt;
+     if (!(bd = cd->msg_bd = (struct msg_bd *)
+-	       malloc((sizeof(struct msg_bd)) * msg_cnt + msg_byte + 1))) {
++	       malloc0((sizeof(struct msg_bd)) * msg_cnt + msg_byte + 1))) {
+ 	fclose(fp);
+-	free(cd);
++	free0(cd);
+ 	return(NULL);
+     }
+     msg = (char *) bd + (sizeof(struct msg_bd)) * msg_cnt;
+@@ -489,9 +492,9 @@
+     if(cd->nextp)
+ 	msg_close(cd->nextp);
+     if(cd->msg_bd)
+-	free(cd->msg_bd);
++	free0(cd->msg_bd);
+     if(cd)
+-	free(cd);
++	free0(cd);
+ }
+ 
+ #ifdef	not_use
+diff -uNr Xsi.orig/Wnn/jlib/jl.c Xsi/Wnn/jlib/jl.c
+--- Xsi.orig/Wnn/jlib/jl.c	Wed Oct 28 13:36:30 1998
++++ Xsi/Wnn/jlib/jl.c	Tue Nov 10 05:07:39 1998
+@@ -166,6 +166,9 @@
+ #include "wnn_string.h"
+ extern struct msg_cat *wnn_msg_cat;
+ 
++extern	char	*malloc0();
++extern	void	free0();
++extern	char	*realloc0();
+ 
+ #define MAXENVS WNN_MAX_ENV_OF_A_CLIENT
+ 
+@@ -480,7 +483,7 @@
+ register char *name;
+ {
+     register struct wnn_file_name_id *f, *f1;
+-    if((f = (struct wnn_file_name_id *)malloc(sizeof(struct wnn_file_name_id) +
++    if((f = (struct wnn_file_name_id *)malloc0(sizeof(struct wnn_file_name_id) +
+ 					     strlen(name) + 1)) == NULL){
+ 	env_wnn_errorno_set=WNN_ALLOC_FAIL;
+ 	return(-1);
+@@ -529,7 +532,7 @@
+     for(prev = &jl_env_p->file; (f = *prev); prev = &f->next){
+ 	if (f->id == id) {
+ 	    *prev = f->next;
+-	    free(f);
++	    free0(f);
+ 	    UnlockMutex(&envs_lock);
+ 	    return(0);
+ 	}
+@@ -774,10 +777,10 @@
+     struct wnn_env *env;
+ 
+     wnn_errorno = 0;
+-    if(rb.size == 0) rb.buf = (char *)malloc((unsigned)(rb.size = 1024));
++    if(rb.size == 0) rb.buf = (char *)malloc0((unsigned)(rb.size = 1024));
+ 
+ #define ALLOC_SET(pter, type, size, size_var) \
+-    ((pter) = ((type *)malloc((unsigned)(sizeof(type) * ((size_var) = (size))))))
++    ((pter) = ((type *)malloc0((unsigned)(sizeof(type) * ((size_var) = (size))))))
+ 
+     if(!ALLOC_SET(buf, struct wnn_buf_mt, 1, dmy)){
+ 	wnn_errorno=WNN_ALLOC_FAIL;return NULL;
+@@ -884,7 +887,7 @@
+     char **c;
+     register WNN_BUN *d;
+ 
+-    if((c =(char **)malloc((unsigned)(len * sizeof(WNN_BUN) + sizeof(char *)))) == NULL){
++    if((c =(char **)malloc0((unsigned)(len * sizeof(WNN_BUN) + sizeof(char *)))) == NULL){
+ 	    buf_wnn_errorno_set=WNN_ALLOC_FAIL;
+ 	return(-1);
+     }
+@@ -918,15 +921,15 @@
+ 	buf->env = 0;
+     }
+ 
+-    if(buf->bun) free((char *)buf->bun);
+-    if(buf->zenkouho) free((char *)buf->zenkouho);
+-    if(buf->zenkouho_dai) free((char *)buf->zenkouho_dai);
+-    if(buf->down_bnst) free((char *)buf->down_bnst);
++    if(buf->bun) free0((char *)buf->bun);
++    if(buf->zenkouho) free0((char *)buf->zenkouho);
++    if(buf->zenkouho_dai) free0((char *)buf->zenkouho_dai);
++    if(buf->down_bnst) free0((char *)buf->down_bnst);
+     for(c = buf->heap; c; c = next) {
+ 	next = *(char **)c;
+-	free(c);
++	free0(c);
+     }
+-    free((char *)buf);
++    free0((char *)buf);
+     UnlockMutex(&(tmpbuf.buf_lock));
+ }
+ 
+@@ -1027,11 +1030,11 @@
+     }
+     if(nhinsi) {
+         hsize = abs(nhinsi);
+-        hno = (int *)malloc(hsize * sizeof(int));
++        hno = (int *)malloc0(hsize * sizeof(int));
+         for(i = 0; i < hsize; i++) {
+             _Sstrcpy(tmp, hname[i]);
+             if((hno[i] = jl_hinsi_number_e(buf->env, tmp)) == -1) {
+-                free((char *)hno);
++                free0((char *)hno);
+                 UnlockMutex(&BUF_LOCK(buf));
+                 return(-1);
+             }
+@@ -1040,7 +1043,7 @@
+ 
+     x = ren_conv_sub((WNN_BUF_MT *)buf, yomi, bun_no, bun_no2, use_maep,
+ 		     0, nhinsi, hno, 0);
+-    if(nhinsi) free((char *)hno);
++    if(nhinsi) free0((char *)hno);
+     UnlockMutex(&BUF_LOCK(buf));
+     return x;
+ } /* End of jl_ren_conv_with_hinsi_name */
+@@ -1422,11 +1425,11 @@
+     } */
+     if(nhinsi) {
+ 	hsize = abs(nhinsi);
+-	hno = (int *)malloc(hsize * sizeof(int));
++	hno = (int *)malloc0(hsize * sizeof(int));
+ 	for(i = 0; i < hsize; i++) {
+ 	    _Sstrcpy(tmp, hname[i]);
+ 	    if((hno[i] = jl_hinsi_number_e(buf->env, tmp)) == -1) {
+-		free((char *)hno);
++		free0((char *)hno);
+ 		UnlockMutex(&BUF_LOCK(buf));
+ 		return(-1);
+ 	    }
+@@ -1435,11 +1438,11 @@
+ 
+     if(tan_conv_sub((WNN_BUF_MT *)buf, yomi, bun_no, bun_no2, use_maep,
+ 		    ich_shop, 0, nhinsi, hno) == -1) {
+-	if(nhinsi) free((char *)hno);
++	if(nhinsi) free0((char *)hno);
+         UnlockMutex(&BUF_LOCK(buf));
+         return(-1);
+     }
+-    if(nhinsi) free((char *)hno);
++    if(nhinsi) free0((char *)hno);
+     x = buf->bun_suu;
+     UnlockMutex(&BUF_LOCK(buf));
+     return x;
+@@ -1767,11 +1770,11 @@
+     } */
+     if(nhinsi) {
+ 	hsize = abs(nhinsi);
+-	hno = (int *)malloc(hsize * sizeof(int));
++	hno = (int *)malloc0(hsize * sizeof(int));
+ 	for(i = 0; i < hsize; i++) {
+ 	    _Sstrcpy(tmp, hname[i]);
+ 	    if((hno[i] = jl_hinsi_number_e(buf->env, tmp)) == -1) {
+-		free((char *)hno);
++		free0((char *)hno);
+ 		UnlockMutex(&BUF_LOCK(buf));
+ 		return(-1);
+ 	    }
+@@ -1780,11 +1783,11 @@
+ 
+     if(nobi_conv_sub(buf, bun_no, ichbn_len, bun_no2, use_maep, ich_shop,
+ 		     nhinsi, hno, 0) == -1) {
+-	if(nhinsi) free((char *)hno);
++	if(nhinsi) free0((char *)hno);
+ 	UnlockMutex(&BUF_LOCK(buf));
+ 	return(-1);
+     }
+-    if(nhinsi) free((char *)hno);
++    if(nhinsi) free0((char *)hno);
+     x = buf->bun_suu;
+     UnlockMutex(&BUF_LOCK(buf));
+     return x;
+@@ -2206,18 +2209,18 @@
+     } */
+     if(nhinsi){
+ 	hsize = abs(nhinsi);
+-	hno = (int *)malloc(hsize * sizeof(int));
++	hno = (int *)malloc0(hsize * sizeof(int));
+ 	for(i = 0; i < hsize; i++) {
+ 	    _Sstrcpy(tmp, hname[i]);
+ 	    if((hno[i] = jl_hinsi_number_e(buf->env, tmp)) == -1) {
+-		free((char *)hno);
++		free0((char *)hno);
+ 		UnlockMutex(&BUF_LOCK(buf));
+ 		return(-1);
+ 	    }
+ 	}
+     }
+     x = zen_conv_sho1(buf, bun_no, use_maep, uniq_level, 0, nhinsi, hno);
+-    if(nhinsi) free((char *)hno);
++    if(nhinsi) free0((char *)hno);
+     UnlockMutex(&BUF_LOCK(buf));
+     return x;
+ }
+@@ -2431,18 +2434,18 @@
+ 	} */
+     if(nhinsi){
+         hsize = abs(nhinsi);
+-        hno = (int *)malloc(hsize * sizeof(int));
++        hno = (int *)malloc0(hsize * sizeof(int));
+         for(i = 0; i < hsize; i++) {
+             _Sstrcpy(tmp, hname[i]);
+             if((hno[i] = jl_hinsi_number_e(buf->env, tmp)) == -1) {
+-                free((char *)hno);
++                free0((char *)hno);
+                 UnlockMutex(&BUF_LOCK(buf));
+                 return(-1);
+             }
+         }
+     }
+     x = zen_conv_dai1(buf, bun_no, bun_no2, use_maep, uniq_level, 0, nhinsi, hno);
+-    if(nhinsi) free((char *)hno);
++    if(nhinsi) free0((char *)hno);
+     UnlockMutex(&BUF_LOCK(buf));
+     return x;
+ }
+@@ -3175,46 +3178,46 @@
+     /* 前確定文節情報分を確定候補数に加える */
+     nkouho = bun_no2 - bun_no + WNN_PREV_BUN_SUU;
+ 
+-    if ( (dic = (int *)malloc(nkouho * sizeof(int))) == NULL )
++    if ( (dic = (int *)malloc0(nkouho * sizeof(int))) == NULL )
+       return(-1);
+ 
+-    if ( (entry = (int *)malloc(nkouho * sizeof(int))) == NULL ) {
+-      free(dic);
++    if ( (entry = (int *)malloc0(nkouho * sizeof(int))) == NULL ) {
++      free0(dic);
+       return(-1);
+     }
+-    if ( (ima = (int *)malloc(nkouho * sizeof(int))) == NULL ) {
+-      free(dic);
+-      free(entry);
++    if ( (ima = (int *)malloc0(nkouho * sizeof(int))) == NULL ) {
++      free0(dic);
++      free0(entry);
+       return(-1);
+     }
+-    if ( (hindo = (int *)malloc(nkouho * sizeof(int))) == NULL ) {
+-      free(dic);
+-      free(entry);
+-      free(ima);
++    if ( (hindo = (int *)malloc0(nkouho * sizeof(int))) == NULL ) {
++      free0(dic);
++      free0(entry);
++      free0(ima);
+       return(-1);
+     }
+-    if ( (kmoji = (int *)malloc(nkouho * sizeof(int))) == NULL ) {
+-      free(dic);
+-      free(entry);
+-      free(ima);
+-      free(hindo);
++    if ( (kmoji = (int *)malloc0(nkouho * sizeof(int))) == NULL ) {
++      free0(dic);
++      free0(entry);
++      free0(ima);
++      free0(hindo);
+       return(-1);
+     }
+-    if ( (kouho = (w_char **)malloc(nkouho * sizeof(w_char *))) == NULL ) {
+-      free(dic);
+-      free(entry);
+-      free(ima);
+-      free(hindo);
+-      free(kmoji);
++    if ( (kouho = (w_char **)malloc0(nkouho * sizeof(w_char *))) == NULL ) {
++      free0(dic);
++      free0(entry);
++      free0(ima);
++      free0(hindo);
++      free0(kmoji);
+       return(-1);
+     }
+-    if ( (tmp = (w_char *)malloc(nkouho * sizeof(w_char) * LENGTHKANJI)) == NULL ) {
+-      free(dic);
+-      free(entry);
+-      free(ima);
+-      free(hindo);
+-      free(kmoji);
+-      free(kouho);
++    if ( (tmp = (w_char *)malloc0(nkouho * sizeof(w_char) * LENGTHKANJI)) == NULL ) {
++      free0(dic);
++      free0(entry);
++      free0(ima);
++      free0(hindo);
++      free0(kmoji);
++      free0(kouho);
+       return(-1);
+     }
+     for(k = 0; k < nkouho; k++) {
+@@ -3280,23 +3283,23 @@
+     if(k == -1) {
+ 	buf_wnn_errorno_copy((WNN_BUF_MT *)buf)
+ 	if (buf_wnn_errorno_eql == WNN_JSERVER_DEAD) {
+-	  free(dic);
+-	  free(entry);
+-	  free(ima);
+-	  free(hindo);
+-	  free(kmoji);
+-	  free(kouho[0]);
+-	  free(kouho);
++	  free0(dic);
++	  free0(entry);
++	  free0(ima);
++	  free0(hindo);
++	  free0(kmoji);
++	  free0(kouho[0]);
++	  free0(kouho);
+ 	  return(-1);
+ 	}
+     }
+-    free(dic);
+-    free(entry);
+-    free(ima);
+-    free(hindo);
+-    free(kmoji);
+-    free(kouho[0]);
+-    free(kouho);
++    free0(dic);
++    free0(entry);
++    free0(ima);
++    free0(hindo);
++    free0(kmoji);
++    free0(kouho[0]);
++    free0(kouho);
+     return(0);
+ } /* End of optimize_in_server */
+ 
+@@ -4482,7 +4485,7 @@
+     if(--wb->ref_cnt <= 0){
+ 	for(wb1 = wb; wb;){
+ 	    if((wb1 == wb) && (wb->hinsi_list != NULL)) {
+-		free((char *)(wb->hinsi_list));
++		free0((char *)(wb->hinsi_list));
+ 		wb->hinsi_list = NULL;
+ 	    }
+ 	    wb->free_next = buf->orig.free_heap;
+@@ -4593,7 +4596,7 @@
+     wb->num_hinsi = nhinsi;
+     if(nhinsi) {
+ 	int hsize = abs(nhinsi) * sizeof(int);
+-	if((wb->hinsi_list = (int *)malloc(hsize)) == NULL) return(NULL);
++	if((wb->hinsi_list = (int *)malloc0(hsize)) == NULL) return(NULL);
+ 	bcopy(hlist, wb->hinsi_list, hsize);
+     } else
+         wb->hinsi_list = NULL;
+@@ -4660,7 +4663,7 @@
+ 
+     newsize = buf->orig.bun_suu + cnt - (bun_no2 - bun_no);
+ 
+-#define Realloc(a, b) realloc((char *)(a), (unsigned)(b))
++#define Realloc(a, b) realloc0((char *)(a), (unsigned)(b))
+ 
+     if(newsize > buf->orig.msize_bun){
+ 	buf->orig.bun = (WNN_BUN **)Realloc(buf->orig.bun, newsize * sizeof(WNN_BUN *));
+@@ -5012,7 +5015,7 @@
+ }
+ 
+ int
+-wnn_cnt_free(buf)
++wnn_cnt_free0(buf)
+ struct wnn_buf *buf;
+ {
+     register int n;
+@@ -5387,10 +5390,10 @@
+  *:::DOC_END
+  */
+ int
+-jl_free(ptr)
++jl_free0(ptr)
+ char *ptr;
+ {
+-    free(ptr);
++    free0(ptr);
+     return(0);
+ } /* End of jl_free */
+ 
+@@ -6213,22 +6216,22 @@
+ 		    int ii, *hlist, nhinsi = num - 1;
+ 		    w_char whname[64];
+ 		    if(nhinsi) {
+-			if(!(hlist = (int *)malloc(nhinsi * sizeof(int))))
++			if(!(hlist = (int *)malloc0(nhinsi * sizeof(int))))
+ 			goto _Err_happend;
+ 			for(ii = 0; ii < nhinsi; ii++) {
+ 			    _Sstrcpy(whname, s[ii]);
+ 			    if((hlist[ii] =
+ 				jl_hinsi_number_e_body(env, whname)) == -1) {
+-				free((char *)hlist);
++				free0((char *)hlist);
+ 				goto _Err_happend;
+ 			    }
+ 			}
+ 			if(strcmp(code, "unuse_hinsi") == 0) nhinsi *= -1;
+ 			if(js_set_henkan_hinsi(env, 1, nhinsi, hlist) < 0) {
+-			    free((char *)hlist);
++			    free0((char *)hlist);
+ 			    goto _Err_happend;
+ 			}
+-			free((char *)hlist);
++			free0((char *)hlist);
+ 		    }
+ 		} 
+ 		break;
+@@ -6974,11 +6977,11 @@
+ 
+     if(nhinsi) {
+         hsize = abs(nhinsi);
+-        hno = (int *)malloc(hsize * sizeof(int));
++        hno = (int *)malloc0(hsize * sizeof(int));
+         for(i = 0; i < hsize; i++) {
+             _Sstrcpy(tmp, hname[i]);
+             if((hno[i] = jl_hinsi_number_e_body(env, tmp)) == -1) {
+-                free((char *)hno);
++                free0((char *)hno);
+                 return(-1);
+             }
+         }
+@@ -6987,10 +6990,10 @@
+     if((x = js_set_henkan_hinsi(env, mode, nhinsi, hno)) == -1) {
+         env_wnn_errorno_copy(env);
+         if_dead_disconnect(env);
+-	 if(nhinsi) free((char *)hno);
++	 if(nhinsi) free0((char *)hno);
+         return(-1);
+     }
+-    if(nhinsi) free((char *)hno);
++    if(nhinsi) free0((char *)hno);
+     return (x);
+ }
+ 
+@@ -8164,7 +8167,7 @@
+     if (!buf || !buf->bun || !(data = buf->bun[bun_no])) return(-1);
+     if (js_dic_info(buf->env, data->dic_no, &dic) < 0)
+ 	return(-1);
+-    if (!(yomi = (w_char *)malloc(sizeof(w_char) * (data->yomilen + 1))))
++    if (!(yomi = (w_char *)malloc0(sizeof(w_char) * (data->yomilen + 1))))
+ 	return(-1);
+     wnn_Strncpy(yomi, data->yomi, data->yomilen);
+     yomi[data->yomilen] = (w_char)0;
+@@ -8191,12 +8194,12 @@
+     InfoShoRec *info, *prev;
+ 
+     if (max <= 0) return(NULL);
+-    if (!(info = (InfoShoRec *)malloc(sizeof(InfoShoRec) * max))) return(NULL);
++    if (!(info = (InfoShoRec *)malloc0(sizeof(InfoShoRec) * max))) return(NULL);
+     bzero((char *)info, sizeof(InfoShoRec) * max);
+ 
+     for (i = 0; i < max; i++) {
+ 	if (Sho_Info(buf, i, &info[i]) < 0) {
+-	    free((char *)info);
++	    free0((char *)info);
+ 	    return(NULL);
+ 	}
+ 	info[i].next = NULL;
+@@ -8214,7 +8217,7 @@
+     InfoTotalRec *info;
+ 
+     if (!p) return(NULL);
+-    if (!(info = (InfoTotalRec *)malloc(sizeof(InfoTotalRec)))) return(NULL);
++    if (!(info = (InfoTotalRec *)malloc0(sizeof(InfoTotalRec)))) return(NULL);
+     bzero((char *)info, sizeof(InfoTotalRec));
+ 
+     for (; p; p = p->next) {
+@@ -8243,7 +8246,7 @@
+     }
+ 
+     if (cnt <= 0) return(NULL);
+-    if (!(info = (InfoDaiRec *)malloc(sizeof(InfoDaiRec) * cnt))) return(NULL);
++    if (!(info = (InfoDaiRec *)malloc0(sizeof(InfoDaiRec) * cnt))) return(NULL);
+     bzero((char *)info, sizeof(InfoDaiRec) * cnt);
+ 
+     d = &info[0];
+@@ -8585,18 +8588,18 @@
+ 	} */
+     if(nhinsi){
+         hsize = abs(nhinsi);
+-        hno = (int *)malloc(hsize * sizeof(int));
++        hno = (int *)malloc0(hsize * sizeof(int));
+         for(i = 0; i < hsize; i++) {
+             _Sstrcpy(tmp, hname[i]);
+             if((hno[i] = jl_hinsi_number_e(buf->env, tmp)) == -1) {
+-                free((char *)hno);
++                free0((char *)hno);
+                 UnlockMutex(&BUF_LOCK(buf));
+                 return(-1);
+             }
+         }
+     }
+     x = zen_conv_dai_ikeiji1(buf, bun_no, bun_no2, use_maep, uniq_level, 0, nhinsi, hno);
+-    if(nhinsi) free((char *)hno);
++    if(nhinsi) free0((char *)hno);
+     UnlockMutex(&BUF_LOCK(buf));
+     return x;
+ }
+diff -uNr Xsi.orig/Wnn/jlib/js.c Xsi/Wnn/jlib/js.c
+--- Xsi.orig/Wnn/jlib/js.c	Wed Oct 28 13:36:31 1998
++++ Xsi/Wnn/jlib/js.c	Tue Nov 10 05:04:13 1998
+@@ -160,7 +160,9 @@
+ */
+ 
+ 
+-extern	char	*malloc();
++extern	char	*malloc0();
++extern	void	free0();
++extern	char	*realloc0();
+ 
+ #include <stdio.h>
+ #include <ctype.h>
+@@ -205,7 +207,7 @@
+ #include "../etc/pwd.c"
+ 
+ 
+-char *malloc();
++char *malloc0();
+ 
+ typedef struct _host_address {
+     int address_len;
+@@ -439,7 +441,7 @@
+     }
+     if (!(sp = getservbyname(name,"tcp"))) return(-1);
+     len = strlen(name);
+-    if (!(p = (my_serv_struct *)malloc(sizeof(my_serv_struct) + len + 1)))
++    if (!(p = (my_serv_struct *)malloc0(sizeof(my_serv_struct) + len + 1)))
+ 	return(-1);
+     p->name = ((char *)p) + sizeof(my_serv_struct);
+     strcpy(p->name, name);
+@@ -894,7 +896,7 @@
+ 	return NULL;
+     }
+     sbp=0;	/* init sndBufPointer */
+-    if(!(new_js=(char *)malloc(sizeof(WNN_JSERVER_ID_INT)))){
++    if(!(new_js=(char *)malloc0(sizeof(WNN_JSERVER_ID_INT)))){
+  	js_wnn_errorno_set=WNN_ALLOC_FAIL;
+ 	return NULL;
+     }
+@@ -905,7 +907,7 @@
+     server->js_dead_env_flg= 0;
+     if((current_sd= cd_open_in_by_addr(addr, addrlen, port, tmout))==-1){
+ 	js_wnn_errorno_set = WNN_NO_JSERVER;
+-	free((char*)server);
++	free0((char*)server);
+ 	current_js=NULL;
+ 	return NULL;
+     }
+@@ -962,7 +964,7 @@
+  }
+  UnlockMutex(&msg_lock);
+ 
+- if(!(new_js=(char *)malloc(sizeof(WNN_JSERVER_ID_INT)))){
++ if(!(new_js=(char *)malloc0(sizeof(WNN_JSERVER_ID_INT)))){
+      wnn_errorno=WNN_ALLOC_FAIL;
+      return NULL;
+  }
+@@ -988,7 +990,7 @@
+    strcpy(host,"unix");
+    if((current_sd= cd_open(lang))==-1){
+ 	UnlockMutex(&open_lock);
+-	wnn_errorno=WNN_SOCK_OPEN_FAIL;free((char*)current_js);current_js=NULL;
++	wnn_errorno=WNN_SOCK_OPEN_FAIL;free0((char*)current_js);current_js=NULL;
+ 	return NULL;
+    }
+  }else{
+@@ -996,7 +998,7 @@
+    host[WNN_HOSTLEN-1] = '\0';	/* truncate by WNN_HOSTLEN */
+    if((current_sd= cd_open_in(servername, lang, tmout))==-1){
+         UnlockMutex(&open_lock);
+-	wnn_errorno=WNN_SOCK_OPEN_FAIL;free((char*)current_js);current_js=NULL;
++	wnn_errorno=WNN_SOCK_OPEN_FAIL;free0((char*)current_js);current_js=NULL;
+ 	return NULL;
+    }
+  }
+@@ -1036,7 +1038,7 @@
+ 
+  if(server==0) return(-1);
+  tmp_js_id = *(WNN_JSERVER_ID_INT *)server;
+- free((char *)server);
++ free0((char *)server);
+  current_js = &tmp_js_id;
+  server = (WNN_JSERVER_ID *)current_js;
+  set_current_js(server);
+@@ -1074,7 +1076,7 @@
+     void js_set_lang();
+ 
+     set_current_js(server);
+-    if(!(env=(struct wnn_env_int *)malloc(sizeof(struct wnn_env_int)))){
++    if(!(env=(struct wnn_env_int *)malloc0(sizeof(struct wnn_env_int)))){
+ 	    js_wnn_errorno_set=WNN_ALLOC_FAIL;
+ 	    return NULL;
+     }
+@@ -1082,14 +1084,14 @@
+     handler_of_jserver_dead(server);
+     if(js_wnn_errorno_eql) {
+         UnlockMutex(&(server_js_lock));
+-        free(env);
++        free0(env);
+         return(NULL);
+     }
+     snd_head(JS_CONNECT, server);
+     putscom(env_name, server);
+     snd_flush(server);
+     e_id=get4com(server);
+-    if(e_id==-1){ js_wnn_errorno_set= get4com(server); free(env); return NULL; }
++    if(e_id==-1){ js_wnn_errorno_set= get4com(server); free0(env); return NULL; }
+     UnlockMutex(&(server_js_lock));
+     env->orig.env_id = e_id;
+     env->orig.js_id  = (WNN_JSERVER_ID *)server;
+@@ -1188,7 +1190,7 @@
+  if(env==0) return(-1);
+  /* 本来は、free しなきゃあかんのだけど、リソース管理が出来ないし、
+     まあ、8バイトだから、ゴミが残るけどいいだろう。
+- free((char *)env);
++ free0((char *)env);
+  */
+  set_current_js(env->js_id);
+  LockMutex(&(env_js_lock));
+@@ -1581,7 +1583,7 @@
+      UnlockMutex(&(env_js_lock)); return -1;
+  }
+  *nhinsi = get4com(env->js_id);
+- if(((*hlist) = (int *)malloc(abs(*nhinsi) * sizeof(int))) == NULL) {
++ if(((*hlist) = (int *)malloc0(abs(*nhinsi) * sizeof(int))) == NULL) {
+      int dummy;
+      for(i = 0; i < abs(*nhinsi); i++) dummy = get4com(env->js_id);
+      env_wnn_errorno_set = WNN_ALLOC_FAIL;
+@@ -2839,7 +2841,7 @@
+     *curfzk = get4com(server);
+ 
+     /* 情報受け取り用構造体の領域を確保する */
+-    if(((*ret) = (WNN_FZK_INFO *)malloc((count + 1) *
++    if(((*ret) = (WNN_FZK_INFO *)malloc0((count + 1) *
+ 					sizeof(WNN_FZK_INFO))) == NULL) {
+ 	WNN_FZK_INFO dummy;
+ 	for(i = 0; i < count; i++){
+@@ -3724,13 +3726,13 @@
+     if(ret->size < ret->num + fi_num) {
+ 	/* 新たにＦＩ関係データ構造体配列を確保する */
+ 	fi_data = (struct fi_rel_data *)
+-	    malloc((ret->num + fi_num) * sizeof(struct fi_rel_data));
++	    malloc0((ret->num + fi_num) * sizeof(struct fi_rel_data));
+ 
+ 	/* 既に使用していたＦＩ関係データをコピーする */
+ 	if(fi_data) {
+ 	    if(ret->fi_buf) {
+ 		bcopy(ret->fi_buf, fi_data, ret->num * sizeof(struct fi_rel_data));
+-		free((char *)ret->fi_buf);
++		free0((char *)ret->fi_buf);
+ 	    }
+ 	}
+ 	ret->fi_buf = fi_data;
+@@ -3962,8 +3964,8 @@
+ {
+  if(ret->size < size){
+ 	if(ret->buf)
+-	    free((char *)ret->buf);
+-	ret->buf = malloc(size);
++	    free0((char *)ret->buf);
++	ret->buf = malloc0(size);
+ 	ret->size = size;
+  }
+ }
+@@ -4263,7 +4265,7 @@
+         funiq.createhost[i]=get1com(env->js_id);
+     }
+     njisho = get1com(env->js_id);
+-    if((primary = (int *)malloc(njisho * sizeof(int))) == NULL) {
++    if((primary = (int *)malloc0(njisho * sizeof(int))) == NULL) {
+ 	env_wnn_errorno_set = WNN_MALLOC_ERR;
+         UnlockMutex(&(env_js_lock));
+         return(-1);
+@@ -4271,12 +4273,12 @@
+     for(i = 0; i < njisho; i++)
+         primary[i] = get4com(env->js_id);
+     if(create_fi_hindo_file(&funiq,fn,com,hpasswd,njisho,primary,NULL) == -1){
+-	free(primary);
++	free0(primary);
+         env_wnn_errorno_set = WNN_FILE_CREATE_ERROR;
+         UnlockMutex(&(env_js_lock));
+         return(-1);
+     }
+-    free(primary);
++    free0(primary);
+     UnlockMutex(&(env_js_lock));
+     return(0);
+ } /* End of js_fi_hindo_file_create_client */
+@@ -4563,7 +4565,7 @@
+ 	num++;
+     }
+     if (num == 0) return(0);
+-    if (!(l = (char **)(s = malloc((sizeof(char *) * num) + total)))) {
++    if (!(l = (char **)(s = malloc0((sizeof(char *) * num) + total)))) {
+ 	js_wnn_errorno_set = WNN_MALLOC_ERR;
+ 	return(-1);
+     }
+@@ -4897,7 +4899,7 @@
+ 	UnlockMutex(&(server_js_lock));
+ 	return((char **)NULL);
+     }
+-    if (!(save = p = malloc((sizeof(host_address) * total_num) + bytes))) {
++    if (!(save = p = malloc0((sizeof(host_address) * total_num) + bytes))) {
+ 	for (i = 0; i < bytes; i++) get1com(server);
+ 	js_wnn_errorno_set = WNN_MALLOC_ERR;
+ 	return((char **)NULL);
+@@ -4931,8 +4933,8 @@
+ 	else
+ 	    total += get_host_name_len(host_p);
+     }
+-    if (!(p = malloc((sizeof(char *) * total_num) + total + total_num))) {
+-	free((char *)save);
++    if (!(p = malloc0((sizeof(char *) * total_num) + total + total_num))) {
++	free0((char *)save);
+ 	js_wnn_errorno_set = WNN_MALLOC_ERR;
+ 	UnlockMutex(&(server_js_lock));
+ 	return((char **)NULL);
+@@ -4947,7 +4949,7 @@
+ 	} else
+ 	    p += get_host_name(host_p, p) + 1;
+     }
+-    free((char *)save);
++    free0((char *)save);
+     *ret_num = total_num;
+     UnlockMutex(&(server_js_lock));
+     return(out_save);
+@@ -5449,5 +5451,6 @@
+  return x;
+ }
+ /* end of js_ikeiji_with_data */
++#include "malloc.c"
+ 
+ 
+diff -uNr Xsi.orig/Wnn/jlib/malloc.c Xsi/Wnn/jlib/malloc.c
+--- Xsi.orig/Wnn/jlib/malloc.c	Thu Jan  1 09:00:00 1970
++++ Xsi/Wnn/jlib/malloc.c	Tue Nov 10 04:58:00 1998
+@@ -0,0 +1,94 @@
++/*
++ * $Id$
++ */
++/*
++ * Copyright Kyoto University Research Institute for Mathematical Sciences
++ *                 1987, 1988, 1989, 1990, 1991
++ * Copyright OMRON Corporation. 1987, 1988, 1989, 1990, 1991
++ * Copyright ASTEC, Inc. 1987, 1988, 1989, 1990, 1991
++ *
++ * Permission to use, copy, modify, distribute, and sell this software
++ * and its documentation for any purpose is hereby granted without fee,
++ * provided that all of the following conditions are satisfied:
++ *
++ * 1) The above copyright notices appear in all copies
++ * 2) Both those copyright notices and this permission notice appear
++ *    in supporting documentation
++ * 3) The name of "Wnn" isn't changed unless substantial modifications
++ *    are made, or
++ * 3') Following words followed by the above copyright notices appear
++ *    in all supporting documentation of software based on "Wnn":
++ *
++ *   "This software is based on the original version of Wnn developed by
++ *    Kyoto University Research Institute for Mathematical Sciences (KURIMS),
++ *    OMRON Corporation and ASTEC Inc."
++ *
++ * 4) The names KURIMS, OMRON and ASTEC not be used in advertising or
++ *    publicity pertaining to distribution of the software without
++ *    specific, written prior permission
++ *
++ * KURIMS, OMRON and ASTEC make no representations about the suitability
++ * of this software for any purpose.  It is provided "as is" without
++ * express or implied warranty.
++ *
++ * Wnn consortium is one of distributors of the official Wnn source code
++ * release.  Wnn consortium also makes no representations about the
++ * suitability of this software for any purpose.  It is provided "as is"
++ * without express or implied warranty.
++ *
++ * KURIMS, OMRON, ASTEC AND WNN CONSORTIUM DISCLAIM ALL WARRANTIES WITH
++ * REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL KURIMS, OMRON, ASTEC OR
++ * WNN CONSORTIUM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL
++ * DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
++ * PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
++ * TORTUOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
++ * PERFORMANCE OF THIS SOFTWARE.
++ *
++ */
++/*	Version 4.0
++ */
++#include <stdio.h>
++/* #include "wnn_malloc.h" */
++#undef	malloc
++#undef	realloc
++#undef	free
++
++extern char *malloc();
++extern void free();
++extern char *realloc();
++extern char *calloc();
++
++char *
++malloc0(size)
++int size;
++{
++    if(size == NULL){
++	size = 1;
++    }
++    size = (size + 7) & 0xfffffff8;
++    return(calloc(size,1));
++}
++
++void
++free0(pter)
++char *pter;
++{
++    if(pter == NULL) return;
++    free(pter);
++    return;
++}
++
++char *
++realloc0(pter,size)
++char *pter;
++int size;
++{
++    if(size == NULL){
++	size = 1;
++    }
++    size = (size + 7) & 0xfffffff8;
++    if(pter == NULL)
++	return(malloc0(size));
++    return(realloc(pter,size));
++}

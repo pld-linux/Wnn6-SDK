@@ -1,0 +1,11 @@
+--- Xsi/Wnn/Imakefile.orig	Wed Oct 28 13:36:14 1998
++++ Xsi/Wnn/Imakefile	Mon Nov  9 23:28:49 1998
+@@ -8,7 +8,7 @@
+ 
+ #if BuildJlib
+ JLIBDIR = romkan jlib
+-SUBDIRS = $(JLIBDIR)
++SUBDIRS = $(JLIBDIR) include
+ #endif
+ 
+ MakeSubdirs($(SUBDIRS))
