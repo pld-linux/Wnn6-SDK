@@ -27,7 +27,7 @@ Biblioteka kliencka Wnn6 potrzebna do uruchamiania klientów Wnn6.
 Summary:	Header files for Wnn6
 Summary(pl):	Pliki nag³ówkowe Wnn6
 Group:		Development/Libraries
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 
 %description devel
 This package contains header files for Wnn6 client developments.
@@ -39,7 +39,7 @@ Ten pakiet zawiera pliki nag³ówkowe do tworzenia klientów Wnn6.
 Summary:	Static Wnn6 client library
 Summary(pl):	Statyczna biblioteka kliencka Wnn6
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}
+Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static Wnn6 client library.
