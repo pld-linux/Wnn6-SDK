@@ -1,5 +1,5 @@
 Summary:	Wnn6 Client Library
-Summary(pl.UTF-8):   Biblioteka kliencka Wnn6
+Summary(pl.UTF-8):	Biblioteka kliencka Wnn6
 Name:		Wnn6-SDK
 Version:	1.0
 Release:	11
@@ -25,7 +25,7 @@ Biblioteka kliencka Wnn6 potrzebna do uruchamiania klientów Wnn6.
 
 %package devel
 Summary:	Header files for Wnn6
-Summary(pl.UTF-8):   Pliki nagłówkowe Wnn6
+Summary(pl.UTF-8):	Pliki nagłówkowe Wnn6
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -37,7 +37,7 @@ Ten pakiet zawiera pliki nagłówkowe do tworzenia klientów Wnn6.
 
 %package static
 Summary:	Static Wnn6 client library
-Summary(pl.UTF-8):   Statyczna biblioteka kliencka Wnn6
+Summary(pl.UTF-8):	Statyczna biblioteka kliencka Wnn6
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
