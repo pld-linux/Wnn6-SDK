@@ -1,15 +1,6 @@
 diff -uNr Xsi.orig/Wnn/etc/bdic.c Xsi/Wnn/etc/bdic.c
 --- Xsi.orig/Wnn/etc/bdic.c	Wed Oct 28 13:36:16 1998
 +++ Xsi/Wnn/etc/bdic.c	Tue Nov 10 05:17:21 1998
-@@ -179,6 +179,8 @@
- #define max(a, b) ((a < b)? b:a)
- #endif
- 
-+extern  char    *malloc0();
-+
- /*:::DOC_START
-  *
-  *    Function Name: dic_get_compressed_filename
 @@ -1849,7 +1851,7 @@
      hjt.hindo_area = (int)((serial + MAX_HINDO_DATA_AREA - 1) / MAX_HINDO_DATA_AREA);
      if(hjt.hindo_area != 0) {
@@ -841,7 +832,7 @@ diff -uNr Xsi.orig/Wnn/jlib/js.c Xsi/Wnn/jlib/js.c
 diff -uNr Xsi.orig/Wnn/jlib/malloc.c Xsi/Wnn/jlib/malloc.c
 --- Xsi.orig/Wnn/jlib/malloc.c	Thu Jan  1 09:00:00 1970
 +++ Xsi/Wnn/jlib/malloc.c	Tue Nov 10 04:58:00 1998
-@@ -0,0 +1,94 @@
+@@ -0,0 +1,86 @@
 +/*
 + * $Id$
 + */
@@ -894,14 +885,6 @@ diff -uNr Xsi.orig/Wnn/jlib/malloc.c Xsi/Wnn/jlib/malloc.c
 + */
 +#include <stdio.h>
 +/* #include "wnn_malloc.h" */
-+#undef	malloc
-+#undef	realloc
-+#undef	free
-+
-+extern char *malloc();
-+extern void free();
-+extern char *realloc();
-+extern char *calloc();
 +
 +char *
 +malloc0(size)

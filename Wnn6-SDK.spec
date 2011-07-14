@@ -57,10 +57,15 @@ Statyczna biblioteka kliencka Wnn6.
 %patch5 -p0
 %patch6 -p0
 
+%{__sed} -i -e 's|/usr/lib64/X11|%{_libdir}/X11|g' \
+	config/X11.tmpl Makefile.ini
+
 %build
 %{__make} World -f Makefile.ini \
+	WNNLIBDIR=%{_libdir} \
 	CC="%{__cc}" \
-	CDEBUGFLAGS="%{rpmcflags}"
+	CDEBUGFLAGS="%{rpmcflags} -fPIC" \
+	REQUIREDLIBS="-lcrypt" \
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -78,6 +83,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc README
 %attr(755,root,root) %{_libdir}/libwnn6.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libwnn6.so.1
 
 %files devel
 %defattr(644,root,root,755)
