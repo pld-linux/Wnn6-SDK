@@ -3,7 +3,7 @@ Summary(pl.UTF-8):	Biblioteka kliencka Wnn6
 Name:		Wnn6-SDK
 Version:	1.0
 Release:	11
-License:	Copyright (C) OMRON Corporation, OMRON Software Co., Ltd. (see README)
+License:	OMRON Corporation (distributable, see README)
 Group:		Libraries
 #Source0Download: http://www.omronsoft.co.jp/SP/pcunix/sdk/
 Source0:	http://www.omronsoft.co.jp/SP/pcunix/sdk/wnn/%{name}.tar.gz
@@ -49,7 +49,8 @@ Static Wnn6 client library.
 Statyczna biblioteka kliencka Wnn6.
 
 %prep
-%setup -q -n src/contrib/im/Xsi
+%setup -q -c
+cd src/contrib/im/Xsi
 %patch0 -p4
 %patch1 -p1
 %patch2 -p1
@@ -62,7 +63,7 @@ Statyczna biblioteka kliencka Wnn6.
 	config/X11.tmpl Makefile.ini
 
 %build
-%{__make} World -f Makefile.ini \
+%{__make} -C src/contrib/im/Xsi -f Makefile.ini World \
 	WNNLIBDIR=%{_libdir} \
 	CC="%{__cc}" \
 	CDEBUGFLAGS="%{rpmcflags} -fPIC" \
@@ -71,7 +72,7 @@ Statyczna biblioteka kliencka Wnn6.
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
+%{__make} -C src/contrib/im/Xsi install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %clean
@@ -82,7 +83,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc README
+%doc src/contrib/im/Xsi/README
 %attr(755,root,root) %{_libdir}/libwnn6.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libwnn6.so.1
 
