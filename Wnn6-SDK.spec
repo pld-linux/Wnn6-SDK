@@ -5,7 +5,8 @@ Version:	1.0
 Release:	11
 License:	Copyright (C) OMRON Corporation, OMRON Software Co., Ltd. (see README)
 Group:		Libraries
-Source0:	ftp://ftp.omronsoft.co.jp/pub/Wnn6/sdk_source/%{name}.tar.gz
+#Source0Download: http://www.omronsoft.co.jp/SP/pcunix/sdk/
+Source0:	http://www.omronsoft.co.jp/SP/pcunix/sdk/wnn/%{name}.tar.gz
 # Source0-md5:	8e0148560524643680fd016e5c4e406b
 Patch0:		%{name}-config.patch
 Patch1:		%{name}-incl.patch
@@ -14,7 +15,7 @@ Patch3:		%{name}-malloc.patch
 Patch4:		%{name}-nonroot.patch
 Patch5:		%{name}-cpp_workaround.patch
 Patch6:		%{name}-header.patch
-URL:		http://www.omronsoft.co.jp/SP/pcunix/wnn/
+URL:		http://www.omronsoft.co.jp/SP/pcunix/sdk/
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -87,7 +88,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
-%{_libdir}/libwnn6.so
+%attr(755,root,root) %{_libdir}/libwnn6.so
 %{_includedir}/wnn6
 
 %files static
