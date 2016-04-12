@@ -16,6 +16,8 @@ Patch4:		%{name}-nonroot.patch
 Patch5:		%{name}-cpp_workaround.patch
 Patch6:		%{name}-header.patch
 URL:		http://www.omronsoft.co.jp/SP/pcunix/sdk/
+BuildRequires:	xorg-util-imake
+BuildRequires:	xorg-util-makedepend
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
