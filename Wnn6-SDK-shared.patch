@@ -1,6 +1,7 @@
---- Xsi/Wnn/jlib/Imakefile.orig	Wed Oct 28 13:36:30 1998
-+++ Xsi/Wnn/jlib/Imakefile	Tue Nov 10 00:52:15 1998
-@@ -4,7 +4,7 @@
+diff -urNp -x '*.orig' Wnn6-SDK-1.0.org/src/contrib/im/Xsi/Wnn/jlib/Imakefile Wnn6-SDK-1.0/src/contrib/im/Xsi/Wnn/jlib/Imakefile
+--- Wnn6-SDK-1.0.org/src/contrib/im/Xsi/Wnn/jlib/Imakefile	2000-09-01 11:58:55.000000000 +0200
++++ Wnn6-SDK-1.0/src/contrib/im/Xsi/Wnn/jlib/Imakefile	2023-02-02 20:06:25.656502010 +0100
+@@ -4,7 +4,7 @@ XCOMM
  
  #ifdef NEED_DEFINE_LIB
  #define DoNormalLib YES
@@ -9,8 +10,8 @@
  #define DoDebugLib NO
  #define DoProfileLib NO
  #endif
-@@ -61,7 +61,7 @@
- OBJS= $(OBJ1) $(LOCAL_ETCOBJS) $(LOCAL_RKOBJS)
+@@ -63,7 +63,7 @@ OBJS= $(OBJ1) $(LOCAL_ETCOBJS) $(LOCAL_R
+ 
  
  LibraryObjectRule()
 -AllTarget($(OBJS) libwnn6_fromsrc.a)
@@ -18,7 +19,7 @@
  
  
  js.o : js.c \
-@@ -72,13 +72,15 @@
+@@ -74,13 +74,15 @@ js.o : js.c \
  
  SingleProgramTarget(kankana,kankana.o,$(WNNJLIB),)
  
@@ -29,8 +30,8 @@
 +LintLibraryTarget(wnn6,$(SRCS))
  
  instlib:: install
-
-
+ 
+ 
 -InstallLibrary(wnn6_fromsrc,$(WNNLIBDIR))
 +InstallLibrary(wnn6,$(WNNLIBDIR))
 +InstallSharedLibrary(wnn6,1.0.0,$(WNNLIBDIR))
